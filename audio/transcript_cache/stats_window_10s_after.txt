@@ -1,0 +1,26 @@
+Transcript Dataset Statistics: window_10s_after
+============================================================
+Total Samples: 5832
+Avg Transcript Length: 183.1 chars
+Avg Word Count: 37.7 words
+Avg Segment Duration: 5.23s
+Empty Transcripts: 0
+
+Label Distribution:
+  Ball out of play: 1680 (28.8%)
+  Throw-in: 1018 (17.5%)
+  Foul: 612 (10.5%)
+  Indirect free-kick: 488 (8.4%)
+  Clearance: 433 (7.4%)
+  Shots on target: 297 (5.1%)
+  Shots off target: 269 (4.6%)
+  Corner: 250 (4.3%)
+  Substitution: 146 (2.5%)
+  Offside: 139 (2.4%)
+  Kick-off: 137 (2.3%)
+  Yellow card: 123 (2.1%)
+  Goal: 120 (2.1%)
+  Direct free-kick: 102 (1.7%)
+  Penalty: 7 (0.1%)
+  Red card: 6 (0.1%)
+  Yellow->red card: 5 (0.1%)

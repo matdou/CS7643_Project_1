@@ -5,26 +5,19 @@ channels:
 
 dependencies:
   - python=3.10
-
   - numpy
   - pandas
   - scikit-learn
   - matplotlib
   - seaborn
-
-  - pytorch
-  - torchvision
-  - torchaudio
-
   - jupyter
   - ipykernel
   - tqdm
-
   - joblib
-
   - pip
   - pip:
       - transformers
       - datasets
-      - tensorflow  
+      - tensorflow
       - SoccerNet
+      - soundfile
