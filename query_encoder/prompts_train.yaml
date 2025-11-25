@@ -1,0 +1,203 @@
+Ball out of play:
+  - the ball goes out of bounds
+  - ball crosses the sideline
+  - play is stopped because the ball left the field
+  - the referee signals that the ball went out
+  - a player kicks the ball out of play
+  - out of play situation occurs
+  - ball leaves the touchline
+  - throw-in will follow as the ball went out
+  - ball exits the field after deflection
+  - referee awards possession for out of play
+
+Throw-in:
+  - player performs a throw-in
+  - the ball is thrown back into play
+  - a throw-in is taken from the sideline
+  - referee signals for a throw-in
+  - team restarts play with a throw
+  - player tosses the ball overhead into the field
+  - ball re-enters the pitch by throw
+  - throw-in opportunity for the team
+  - new play starts with a throw
+  - the line judge indicates a throw-in
+
+Indirect free-kick:
+  - referee awards an indirect free-kick
+  - play restarts with an indirect kick
+  - an indirect free-kick is taken
+  - whistle blows for an indirect foul
+  - referee raises hand for an indirect kick
+  - indirect free-kick near the box
+  - player taps the ball for a teammate
+  - two-touch free-kick situation
+  - restart of play from an indirect kick
+  - foul results in an indirect free-kick
+
+Foul:
+  - player commits a foul
+  - referee whistles for a foul
+  - a tackle breaks the rules
+  - foul is called on the player
+  - referee stops play for a foul
+  - opponent is tripped illegally
+  - a harsh challenge causes a foul
+  - team concedes a foul
+  - contact foul leads to free kick
+  - illegal obstruction occurs
+
+Clearance:
+  - defender clears the ball away
+  - ball is kicked out from the danger zone
+  - defensive clearance after an attack
+  - center-back boots the ball upfield
+  - player clears the ball from the box
+  - long clearance to relieve pressure
+  - emergency clearance by defender
+  - ball sent away from the goal area
+  - defender heads the ball clear
+  - defensive play ends with a clearance
+
+Shots on target:
+  - player shoots on target
+  - goalkeeper makes a save
+  - the shot is on goal
+  - accurate strike forces the keeper to act
+  - team attempts a shot on target
+  - ball directed towards the net
+  - powerful shot saved by the keeper
+  - attacking team hits the target
+  - striker tests the goalkeeper
+  - effort on goal requires a save
+
+Shots off target:
+  - player shoots off target
+  - ball goes wide of the post
+  - shot misses the goal
+  - attempt goes over the bar
+  - striker fires but misses
+  - wasted chance off target
+  - shot drifts wide
+  - poor finishing leads to a miss
+  - long-range effort off target
+  - attacking player misses the net
+
+Corner:
+  - corner kick awarded
+  - ball deflected out for a corner
+  - player takes a corner kick
+  - team prepares for a corner
+  - cross delivered from the corner flag
+  - referee signals a corner
+  - attacking team gains a corner
+  - corner kick swung into the box
+  - dangerous corner situation
+  - header attempt from a corner
+
+Substitution:
+  - substitution is made
+  - player is replaced
+  - new player enters the pitch
+  - referee allows a substitution
+  - player leaves the field for a sub
+  - change in the lineup occurs
+  - coach makes a substitution
+  - fresh legs come onto the field
+  - substitution board is raised
+  - tactical substitution by the manager
+
+Kick-off:
+  - match starts with a kick-off
+  - restart from the center circle
+  - team takes the kick-off
+  - second half begins with a kick-off
+  - referee blows for the start of play
+  - play resumes after goal with a kick-off
+  - ball tapped to start the game
+  - teams line up for kick-off
+  - new period begins with a kick-off
+  - player kicks off the ball
+
+Direct free-kick:
+  - direct free-kick awarded
+  - referee signals a direct free-kick
+  - dangerous free-kick position
+  - player shoots directly at goal
+  - direct free-kick outside the box
+  - foul leads to direct free-kick
+  - ball curled over the wall
+  - attacking team takes a free-kick shot
+  - free-kick strike toward the goal
+  - direct free-kick chance
+
+Offside:
+  - player is caught offside
+  - offside flag is raised
+  - referee stops play for offside
+  - attacker in offside position
+  - offside call against the striker
+  - linesman signals offside
+  - goal disallowed for offside
+  - early run causes offside
+  - offside trap works
+  - play halted for offside
+
+Yellow card:
+  - referee shows a yellow card
+  - player is booked
+  - warning for unsporting behavior
+  - yellow card given after foul
+  - referee cautions the player
+  - card issued for time wasting
+  - yellow card for dissent
+  - player receives a booking
+  - referee flashes a yellow card
+  - disciplinary caution shown
+
+Goal:
+  - player scores a goal
+  - the ball goes into the net
+  - team celebrates a goal
+  - crowd cheers after a goal
+  - striker finishes and scores
+  - referee signals a valid goal
+  - goal scored by the home team
+  - header results in a goal
+  - goal changes the scoreline
+  - scoring moment in the match
+
+Penalty:
+  - penalty kick awarded
+  - foul inside the box leads to a penalty
+  - referee points to the spot
+  - player takes a penalty
+  - goalkeeper faces a penalty
+  - dramatic penalty situation
+  - penalty shot on goal
+  - team has a chance from the spot
+  - player converts a penalty
+  - penalty decision by the referee
+
+Red card:
+  - referee shows a red card
+  - player is sent off
+  - dismissal after a foul
+  - direct red card for violent conduct
+  - referee ejects the player
+  - straight red card shown
+  - player leaves the field after red card
+  - serious foul leads to red card
+  - red card decision by referee
+  - team reduced to ten men
+
+Yellow->red card:
+  - player receives a second yellow card
+  - two yellow cards lead to a red
+  - referee sends off the player after second caution
+  - second booking results in dismissal
+  - player shown yellow then red
+  - accumulation of cards causes red card
+  - player dismissed for double yellow
+  - second yellow equals red card
+  - referee upgrades yellow to red
+  - player leaves after two cautions
