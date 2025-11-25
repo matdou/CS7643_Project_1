@@ -1,86 +1,132 @@
+import numpy as np
 import torch
 import torch.nn as nn
-from transformers import WhisperProcessor, WhisperForConditionalGeneration, AutoTokenizer, AutoModel
-import numpy as np
+from transformers import (
+    AutoModel,
+    AutoTokenizer,
+    WhisperForConditionalGeneration,
+    WhisperProcessor,
+)
+
 
 class SpeechTextEncoder(nn.Module):
-    def __init__(self,
-                 asr_model="openai/whisper-base",
-                 text_model="sentence-transformers/all-MiniLM-L6-v2",
-                 translate_to_english=True):
+    """Speech-to-text transcription + text embedding with batching support."""
+
+    def __init__(
+        self,
+        asr_model: str = "openai/whisper-base",
+        text_model: str = "sentence-transformers/all-MiniLM-L6-v2",
+        translate_to_english: bool = True,
+        device: str | torch.device | None = None,
+        quiet: bool = False,
+    ) -> None:
         super().__init__()
         self.translate_to_english = translate_to_english
         self.whisper_processor = WhisperProcessor.from_pretrained(asr_model)
         self.whisper = WhisperForConditionalGeneration.from_pretrained(asr_model)
         self.text_tokenizer = AutoTokenizer.from_pretrained(text_model)
         self.text_model = AutoModel.from_pretrained(text_model)
+        self.device = torch.device(device) if device is not None else torch.device("cpu")
+        self.quiet = quiet
+        self.to(self.device)
 
-    def forward(self, waveform, sampling_rate=16000):
-        """
-        Args:
-            waveform: Can be:
-                - torch.Tensor of shape [num_samples] or [batch, num_samples]
-                - numpy array of shape [num_samples]
-        """
-        
-        # Convert to numpy if torch tensor
+    @property
+    def output_dim(self) -> int:
+        return self.text_model.config.hidden_size
+
+    def _log(self, msg: str, quiet: bool) -> None:
+        if not (self.quiet or quiet):
+            print(msg)
+
+    def _normalize_waveforms(self, waveform: torch.Tensor | np.ndarray | list) -> list:
         if isinstance(waveform, torch.Tensor):
-            waveform = waveform.cpu().numpy()
-            
-            # Ensure proper shape: squeeze to 1D if needed
-            while waveform.ndim > 1:
-                waveform = waveform.squeeze(0)
-                
+            if waveform.ndim == 1:
+                waveform = waveform.unsqueeze(0)
+            data = [w.detach().cpu().numpy() for w in waveform]
         elif isinstance(waveform, np.ndarray):
-            # Ensure 1D
-            while waveform.ndim > 1:
-                waveform = waveform.squeeze(0)
-        
-        
-        # Step 1: Process audio for Whisper
-        input_feat = self.whisper_processor(
-            waveform, 
-            sampling_rate=sampling_rate, 
-            return_tensors="pt"
-        )
-        
-        #print(f"[SPEECH] Whisper input features shape: {input_feat['input_features'].shape}")
-        
-        # Move to same device as model
-        input_feat = {k: v.to(self.whisper.device) for k, v in input_feat.items()}
+            if waveform.ndim == 1:
+                waveform = waveform[None, :]
+            data = [w for w in waveform]
+        elif isinstance(waveform, list):
+            data = []
+            for w in waveform:
+                if isinstance(w, torch.Tensor):
+                    data.append(w.detach().cpu().numpy())
+                else:
+                    data.append(np.asarray(w))
+        else:
+            raise TypeError(f"Unsupported waveform type: {type(waveform)}")
 
-        # Step 2: Generate text (transcription or translation)
+        processed = []
+        for w in data:
+            if w.ndim > 1:
+                w = np.squeeze(w)
+            processed.append(w.astype(np.float32))
+        return processed
+
+    def transcribe(
+        self,
+        waveform: torch.Tensor | np.ndarray | list,
+        sampling_rate: int = 16000,
+        device: str | torch.device | None = None,
+        quiet: bool = False,
+    ) -> list[str]:
+        run_device = torch.device(device) if device is not None else self.device
+        waveforms = self._normalize_waveforms(waveform)
+        features = self.whisper_processor(
+            waveforms, sampling_rate=sampling_rate, return_tensors="pt", padding=True
+        )
+        features = {k: v.to(run_device) for k, v in features.items()}
+        self.whisper.to(run_device)
+
         generate_opts = {"task": "translate"} if self.translate_to_english else {}
-        
         with torch.no_grad():
-            transcription_ids = self.whisper.generate(
-                input_feat["input_features"], **generate_opts
-            )
+            ids = self.whisper.generate(features["input_features"], **generate_opts)
 
-        # Decode to text
-        transcript = self.whisper_processor.batch_decode(
-            transcription_ids, skip_special_tokens=True
-        )[0].strip()
-        
-        #print(f"[SPEECH] Transcript: '{transcript}'")
+        transcripts = [t.strip() for t in self.whisper_processor.batch_decode(ids, skip_special_tokens=True)]
+        self._log(f"[SPEECH] Transcribed {len(transcripts)} utterances", quiet)
+        return transcripts
 
-        # Step 3: Text embedding (using English embeddings)
-        text_inputs = self.text_tokenizer(
-            transcript, 
-            return_tensors="pt", 
-            padding=True, 
+    def encode_text(
+        self,
+        texts: list[str],
+        device: str | torch.device | None = None,
+        quiet: bool = False,
+    ) -> torch.Tensor:
+        run_device = torch.device(device) if device is not None else self.device
+        inputs = self.text_tokenizer(
+            texts,
+            return_tensors="pt",
+            padding=True,
             truncation=True,
-            max_length=512
+            max_length=512,
         )
-        
-        # Move to same device as text model
-        text_inputs = {k: v.to(self.text_model.device) for k, v in text_inputs.items()}
-        
-        with torch.no_grad():
-            outputs = self.text_model(**text_inputs)
-        
-        text_emb = outputs.last_hidden_state.mean(dim=1)
-        
-        #print(f"[SPEECH] Text embedding shape: {text_emb.shape}")
+        inputs = {k: v.to(run_device) for k, v in inputs.items()}
+        self.text_model.to(run_device)
 
-        return text_emb, transcript
+        with torch.no_grad():
+            outputs = self.text_model(**inputs)
+
+        embeddings = outputs.last_hidden_state.mean(dim=1)
+        self._log(f"[SPEECH] Text embedding shape: {embeddings.shape}", quiet)
+        return embeddings
+
+    def forward(
+        self,
+        waveform: torch.Tensor | np.ndarray | list,
+        sampling_rate: int = 16000,
+        device: str | torch.device | None = None,
+        quiet: bool = False,
+    ) -> tuple[torch.Tensor, list[str]]:
+        """Transcribe speech and return pooled text embeddings.
+
+        Returns:
+            embeddings: Tensor of shape ``[B, hidden]``
+            transcripts: list of transcribed strings
+        """
+
+        transcripts = self.transcribe(
+            waveform, sampling_rate=sampling_rate, device=device, quiet=quiet
+        )
+        embeddings = self.encode_text(transcripts, device=device, quiet=quiet)
+        return embeddings, transcripts
